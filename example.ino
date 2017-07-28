@@ -3,6 +3,10 @@ volatile uint8_t scope[4];
 volatile uint8_t scope_ch = 1;
 
 void setup(){
+  pinMode(MISO, OUTPUT);
+  pinMode(MOSI, INPUT);
+  pinMode(SCK, INPUT);
+  pinMode(SS, INPUT);
   // SPI slave for debugging via USBTinyISP
   SPCR = _BV(SPE) | _BV(SPIE);
 }
