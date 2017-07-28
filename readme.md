@@ -1,4 +1,4 @@
-# USBTinyAVR debug scope
+# USBTinyISP debug scope
 
 A simple script to plot values form an AVR chip using the ISP header.
 
@@ -6,7 +6,7 @@ A simple script to plot values form an AVR chip using the ISP header.
 
 ## Usage
 
-Should work with any USBTinyAVR compatible programmer and any AVR chip that supports SPI slave on the ISP pins. Requires PyUSB, numpy and matplotlib.
+Should work with any USBTinyISP compatible programmer and any AVR chip that supports SPI slave on the ISP pins. Requires PyUSB, numpy and matplotlib.
 
 An example Arduino script is provided to set up SPI correctly.
 

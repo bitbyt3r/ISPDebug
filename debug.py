@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from threading import Thread
 
-import usbtinyavr
+import usbtinyisp
 
 from pdb import set_trace
 
@@ -14,7 +14,7 @@ fig, ax = plt.subplots()
 ydata = np.zeros([samples, channels])
 lns = plt.plot(ydata)
 
-tiny = usbtinyavr.usbtiny()
+tiny = usbtinyisp.usbtiny()
 tiny.power_on()
 
 def aquire():
