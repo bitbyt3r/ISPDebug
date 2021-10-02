@@ -1,46 +1,30 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from threading import Thread
-
 import usbtinyisp
-
-from pdb import set_trace
-
-samples = 1000
-channels = 4
-
-fig, ax = plt.subplots()
-ydata = np.zeros([samples, channels])
-lns = plt.plot(ydata)
+import time
+import bitstring
 
 tiny = usbtinyisp.usbtiny()
 tiny.power_on()
 
-def aquire():
-    global ydata
-    while True:
-        ydata = np.roll(ydata, -1, 0)
-        for j in range(channels):
-            dat = tiny.spi1(0)
-            ydata[-1, j] = dat[0]
+ROT = [0xAA, 0x55, 0x2A, 0x15, 0x0A, 0x05, 0x02, 0x01]
 
-th = Thread(target=aquire)
-th.daemon = True
-th.start()
-
-def init():
-    ax.set_ylim(0, 255)
-    ax.set_xlim(0, samples)
-    return lns
-
-def update(frame):
-    #set_trace()
-    for ln, dat in zip(lns, ydata.T):
-        ln.set_ydata(dat)
-
-    return lns
-
-ani = FuncAnimation(fig, update, interval=100,
-                    init_func=init, blit=True)
-plt.show()
+while True:
+    data = tiny.spi1(0)[0]
+    if data == 0:
+        continue
+    if not data in ROT:
+        continue
+    rot = ROT.index(data) # rot is the number of bit positions we are out of sync.
+    string = bytearray([data])
+    while data != 0:
+        data = tiny.spi1(0)[0]
+        string.append(data)
+    bits = bitstring.BitArray(bytes=string) << rot
+    raw = bits.tobytes()
+    while raw.startswith(bytes([0xAA])):
+        raw = raw[1:]
+    while raw.endswith(bytes([0x00])):
+        raw = raw[:-1]
+    try:
+        print(raw.decode('ASCII'), end="")
+    except UnicodeDecodeError:
+        print(raw)

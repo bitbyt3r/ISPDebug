@@ -1,5 +1,6 @@
 import usb.core
 import usb.util
+import time
 
 class usbtiny:
 
@@ -39,7 +40,10 @@ class usbtiny:
     return self.dev.ctrl_transfer(usb.util.CTRL_IN|usb.util.CTRL_RECIPIENT_DEVICE|usb.util.CTRL_TYPE_VENDOR,req,val,index,retlen)
     
   def power_on(self):
+    self._usb_control(self.USBTINY_POWERUP, self.USBTINY_SCK_DEFAULT, self.USBTINY_RESET_LOW )
+    time.sleep(0.1)
     self._usb_control(self.USBTINY_POWERUP, self.USBTINY_SCK_DEFAULT, self.USBTINY_RESET_HIGH )
+    time.sleep(0.1)
 
   def power_off(self):
     self._usb_control(self.USBTINY_POWERDOWN,0,0)
